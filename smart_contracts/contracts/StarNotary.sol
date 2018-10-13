@@ -51,8 +51,7 @@ contract StarNotary is ERC721 {
             msg.sender.transfer(msg.value - starCost);
         }
     }
-
-    /*
+  
     function checkIfStarExist(string _name,  string _story, string _dec, string _mag, string _cent) view public returns(bool) {
 
         bool result = false;
@@ -75,6 +74,5 @@ contract StarNotary is ERC721 {
         }
 
         return result;
-    }
-    */
+    }    
 }

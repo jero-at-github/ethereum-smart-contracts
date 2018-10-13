@@ -15,15 +15,37 @@ contract('StarNotary', accounts => {
     })
     
     describe('can create a star', () => { 
-        it('can create a star and get its name', async function () { 
-            
-            await this.contract.createStar('awesome star!', 1, {from: accounts[0]})
 
-            assert.equal(await this.contract.tokenIdToStarInfo(1), 'awesome star!')
+        let starId = 1;
+
+        beforeEach(async function () { 
+
+            // create the star
+            await this.contract.createStar(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: accounts[0]});                   
+        })
+
+        it('can create a star and get its name', async function () {                         
+
+            // check if the star was correctly created
+            let createdStar = await this.contract.tokenIdToStarInfo(starId);
+
+            assert.equal(
+                JSON.stringify(createdStar), 
+                JSON.stringify(starTestData),
+                "The created star doesn't contain the expected properties values"
+            );                             
+        })
+
+        it('can create a star and check that it exists', async function () {   
+
+            // check if the checkIfStarExist function works as expected
+            let isStarAlreadyRegistered = await this.contract.checkIfStarExist(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4]);
+            assert.equal(isStarAlreadyRegistered, true, "The isStarAlreadyRegistered function failed");            
         })
     })
 
     describe('buying and selling stars', () => { 
+
         let user1 = accounts[1]
         let user2 = accounts[2]
         let randomMaliciousUser = accounts[3]
@@ -32,7 +54,7 @@ contract('StarNotary', accounts => {
         let starPrice = web3.toWei(.01, "ether")
 
         beforeEach(async function () { 
-            await this.contract.createStar('awesome star!', starId, {from: user1})    
+            await this.contract.createStar(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: user1});                    
         })
 
         it('user1 can put up their star for sale', async function () { 
