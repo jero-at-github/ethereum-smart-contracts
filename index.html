@@ -26,7 +26,8 @@
             <button id="claim-button" onclick="claimButtonClicked()">Claim Star</button>
         </div>
 
-        <script>               
+        <script>           
+
             var starId = 1;
 
             var starTestData = [
@@ -36,33 +37,50 @@
                     "dec_121.874", 
                     "mag_245.978"
                 ];
-            
+        
+            var environment = "ganache"; // ganache, infura                
+                
+            var ganacheUrl = "HTTP://127.0.0.1:7545";
             var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
             var myAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";
             var myContractAddress = "0x5CaFfA5D1c124b7769B2ED59A6bd4dEa173e57F5";
+            var ganacheContractAddress = "0x44c0a70fa1f78ddd313921c67903154df085350b";
 
             if(typeof web3 != 'undefined') { 
+
                 // case with Metamask
                 web3 = new Web3(web3.currentProvider)
-            } else {
-                // Instantiate and set Infura as your provider                
+                console.log("Using Metamask");
+            }                
+            else if (environment == "ganache") {
+                
+                // ganache
+                web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));
+                console.log("Using Infura API");
+            } 
+            else if (environment == "infura") {
+
+                // infura
                 web3 = new Web3(new Web3.providers.HttpProvider(infuraUrl));
+                console.log("Using Infura API");
             }
 
-            if(!web3.isConnected()) {
- 
+            if(!web3.isConnected()) { 
                 console.log("Web3 is not connected!");
                 alert("Web3 is not connected!");
             } else {
-                console.log("Web3 is now connected...");        
-                
-                var version = web3.version.api;
-                console.log("Using web3 version: " + version); 
+                console.log("Web3 is now connected...");                        
+                var version = web3.version.api;                
+                console.log("Web3 version: " + version);
             }
-
-            // The default (top) wallet account from a list of test accounts 
-            //web3.eth.defaultAccount = web3.eth.accounts[0];
-            web3.eth.defaultAccount = myAccount;
+            
+            if (environment == "ganache") {
+                // The default (top) wallet account from a list of test accounts 
+                web3.eth.defaultAccount = web3.eth.accounts[0];
+            }
+            else {
+                web3.eth.defaultAccount = myAccount;
+            }                        
 
             // The interface definition for your smart contract (the ABI) 
             var StarNotary = web3.eth.contract(
@@ -497,7 +515,14 @@
             );            
 
             // Grab the contract at specified deployed address with the interface defined by the ABI
-            var starNotary = StarNotary.at(myContractAddress);
+            var starNotary;
+
+            if (environment == "ganache") {
+                starNotary = StarNotary.at(ganacheContractAddress);
+            }
+            else {
+                starNotary = StarNotary.at(myContractAddress);
+            }                                                
             
             // Get and display star name
             /*
@@ -530,7 +555,7 @@ debugger;
                 */
                
                 
-
+                /*
                 starNotary.
                     checkIfStarExist(
                         starTestData[0], 
@@ -538,17 +563,20 @@ debugger;
                         starTestData[2], 
                         starTestData[3], 
                         starTestData[4], 
-                        {from: myAccount}, 
+                        {from: web3.eth.defaultAccount}, 
                         function(res) {
                             alert(res);
                         }
                     );                                        
-              
+                */
+
                 starNotary.createStar(
-                    starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: myAccount}, 
-                    function (error, result) {
-debugger;                        
+                    starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: web3.eth.defaultAccount}, 
+                    function (error, result) {    
                         if (!error) {
+
+                            console.log(result);
+
                             /*
                             var starClaimedEvent = starNotary.starClaimed({from: account});
                             starClaimedEvent.watch(function(error, result) {
