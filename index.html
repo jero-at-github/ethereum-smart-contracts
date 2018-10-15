@@ -38,12 +38,14 @@
                     "mag_245.978"
                 ];
         
-            var environment = "ganache"; // ganache, infura                
+            var environment = "rinkeby"; // ganache, rinkeby                
                 
             var ganacheUrl = "HTTP://127.0.0.1:7545";
             var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
+
             var myAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";
-            var myContractAddress = "0x5CaFfA5D1c124b7769B2ED59A6bd4dEa173e57F5";
+
+            var myContractAddress = "0x3930c1568d83B15aE210b1C426D55c73bF3fD74B"; //"0x5CaFfA5D1c124b7769B2ED59A6bd4dEa173e57F5"
             var ganacheContractAddress = "0x44c0a70fa1f78ddd313921c67903154df085350b";
 
             if(typeof web3 != 'undefined') { 
@@ -58,7 +60,7 @@
                 web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));
                 console.log("Using Infura API");
             } 
-            else if (environment == "infura") {
+            else if (environment == "rinkeby") {
 
                 // infura
                 web3 = new Web3(new Web3.providers.HttpProvider(infuraUrl));
@@ -69,7 +71,7 @@
                 console.log("Web3 is not connected!");
                 alert("Web3 is not connected!");
             } else {
-                console.log("Web3 is now connected...");                        
+                console.log("Web3 is now connected to: " + environment);                        
                 var version = web3.version.api;                
                 console.log("Web3 version: " + version);
             }
@@ -121,6 +123,43 @@
                     ],
                     "payable": false,
                     "stateMutability": "view",
+                    "type": "function"
+                    },
+                    {
+                    "constant": true,
+                    "inputs": [
+                        {
+                        "name": "tokenId",
+                        "type": "uint256"
+                        }
+                    ],
+                    "name": "getApproved",
+                    "outputs": [
+                        {
+                        "name": "",
+                        "type": "address"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                    },
+                    {
+                    "constant": false,
+                    "inputs": [
+                        {
+                        "name": "to",
+                        "type": "address"
+                        },
+                        {
+                        "name": "tokenId",
+                        "type": "uint256"
+                        }
+                    ],
+                    "name": "approve",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
                     "type": "function"
                     },
                     {
@@ -181,6 +220,47 @@
                     "type": "function"
                     },
                     {
+                    "constant": false,
+                    "inputs": [
+                        {
+                        "name": "from",
+                        "type": "address"
+                        },
+                        {
+                        "name": "to",
+                        "type": "address"
+                        },
+                        {
+                        "name": "tokenId",
+                        "type": "uint256"
+                        }
+                    ],
+                    "name": "safeTransferFrom",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                    },
+                    {
+                    "constant": true,
+                    "inputs": [
+                        {
+                        "name": "tokenId",
+                        "type": "uint256"
+                        }
+                    ],
+                    "name": "ownerOf",
+                    "outputs": [
+                        {
+                        "name": "",
+                        "type": "address"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                    },
+                    {
                     "constant": true,
                     "inputs": [
                         {
@@ -193,6 +273,73 @@
                         {
                         "name": "",
                         "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                    },
+                    {
+                    "constant": false,
+                    "inputs": [
+                        {
+                        "name": "to",
+                        "type": "address"
+                        },
+                        {
+                        "name": "approved",
+                        "type": "bool"
+                        }
+                    ],
+                    "name": "setApprovalForAll",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                    },
+                    {
+                    "constant": false,
+                    "inputs": [
+                        {
+                        "name": "from",
+                        "type": "address"
+                        },
+                        {
+                        "name": "to",
+                        "type": "address"
+                        },
+                        {
+                        "name": "tokenId",
+                        "type": "uint256"
+                        },
+                        {
+                        "name": "_data",
+                        "type": "bytes"
+                        }
+                    ],
+                    "name": "safeTransferFrom",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                    },
+                    {
+                    "constant": true,
+                    "inputs": [
+                        {
+                        "name": "owner",
+                        "type": "address"
+                        },
+                        {
+                        "name": "operator",
+                        "type": "address"
+                        }
+                    ],
+                    "name": "isApprovedForAll",
+                    "outputs": [
+                        {
+                        "name": "",
+                        "type": "bool"
                         }
                     ],
                     "payable": false,
@@ -367,148 +514,17 @@
                     "type": "function"
                     },
                     {
-                    "constant": false,
-                    "inputs": [
-                        {
-                        "name": "_approved",
-                        "type": "address"
-                        },
-                        {
-                        "name": "_tokenId",
-                        "type": "uint256"
-                        }
-                    ],
-                    "name": "approve",
-                    "outputs": [],
-                    "payable": false,
-                    "stateMutability": "nonpayable",
-                    "type": "function"
-                    },
-                    {
-                    "constant": false,
-                    "inputs": [
-                        {
-                        "name": "_from",
-                        "type": "address"
-                        },
-                        {
-                        "name": "_to",
-                        "type": "address"
-                        },
-                        {
-                        "name": "_tokenId",
-                        "type": "uint256"
-                        }
-                    ],
-                    "name": "safeTransferFrom",
-                    "outputs": [],
-                    "payable": false,
-                    "stateMutability": "nonpayable",
-                    "type": "function"
-                    },
-                    {
-                    "constant": false,
-                    "inputs": [
-                        {
-                        "name": "from",
-                        "type": "address"
-                        },
-                        {
-                        "name": "to",
-                        "type": "address"
-                        },
-                        {
-                        "name": "tokenId",
-                        "type": "uint256"
-                        },
-                        {
-                        "name": "_data",
-                        "type": "bytes"
-                        }
-                    ],
-                    "name": "safeTransferFrom",
-                    "outputs": [],
-                    "payable": false,
-                    "stateMutability": "nonpayable",
-                    "type": "function"
-                    },
-                    {
-                    "constant": false,
-                    "inputs": [
-                        {
-                        "name": "_operator",
-                        "type": "address"
-                        },
-                        {
-                        "name": "_approved",
-                        "type": "bool"
-                        }
-                    ],
-                    "name": "setApprovalForAll",
-                    "outputs": [],
-                    "payable": false,
-                    "stateMutability": "nonpayable",
-                    "type": "function"
-                    },
-                    {
                     "constant": true,
-                    "inputs": [
-                        {
-                        "name": "_tokenId",
-                        "type": "uint256"
-                        }
-                    ],
-                    "name": "getApproved",
+                    "inputs": [],
+                    "name": "helloWorld",
                     "outputs": [
                         {
                         "name": "",
-                        "type": "address"
+                        "type": "string"
                         }
                     ],
                     "payable": false,
-                    "stateMutability": "view",
-                    "type": "function"
-                    },
-                    {
-                    "constant": true,
-                    "inputs": [
-                        {
-                        "name": "_owner",
-                        "type": "address"
-                        },
-                        {
-                        "name": "_operator",
-                        "type": "address"
-                        }
-                    ],
-                    "name": "isApprovedForAll",
-                    "outputs": [
-                        {
-                        "name": "",
-                        "type": "bool"
-                        }
-                    ],
-                    "payable": false,
-                    "stateMutability": "view",
-                    "type": "function"
-                    },
-                    {
-                    "constant": true,
-                    "inputs": [
-                        {
-                        "name": "_tokenId",
-                        "type": "uint256"
-                        }
-                    ],
-                    "name": "ownerOf",
-                    "outputs": [
-                        {
-                        "name": "",
-                        "type": "address"
-                        }
-                    ],
-                    "payable": false,
-                    "stateMutability": "view",
+                    "stateMutability": "pure",
                     "type": "function"
                     }
                 ]
@@ -523,75 +539,51 @@
             else {
                 starNotary = StarNotary.at(myContractAddress);
             }                                                
-            
-            // Get and display star name
-            /*
-            starNotary.starName(function (error, result) {
-                if (!error) {
-                    document.getElementById('star-name').innerText = result
-                } else { 
-                    console.log(error);
-                }
-            });
-
-            // Get and display star owner
-            starNotary.starOwner(function (error, result) {
-                if (!error) {
-                    document.getElementById('star-owner').innerText = result
-                } else { 
-                    console.log(error);
-                }
-            });
-            */
-
+                        
             // Enable claim button being clicked
             function claimButtonClicked() { 
-debugger;
-
-                /*
-                starNotary.tokenIdToStarInfo(1).then(function(res) {
-                    console.log(res);
-                });
-                */
-               
+             
+                starNotary.helloWorld(function(error, result) {
+                    alert("hello world = " + result);
+                });             
                 
-                /*
+                
+                var starClaimedEvent = starNotary.Transfer();     
+
+                 starClaimedEvent.watch(function(error, result) {
+                    if (!error) {
+                        alert(result);
+                    } else {
+                        console.log('watching for star claimed event is failing');
+                    }
+                });
+                
+                // create a star
+                starNotary.createStar(
+                    starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: web3.eth.defaultAccount}, 
+                    function (error, result) {    
+                        if (!error) {
+
+                            console.log(result);                           
+                        } else { 
+                            console.log(error);
+                        }
+                    });     
+                    
+                // check if the star exsits
+                /*    
                 starNotary.
                     checkIfStarExist(
                         starTestData[0], 
                         starTestData[1], 
                         starTestData[2], 
                         starTestData[3], 
-                        starTestData[4], 
-                        {from: web3.eth.defaultAccount}, 
-                        function(res) {
-                            alert(res);
+                        starTestData[4],                         
+                        function(error, res) {
+                            alert("Star exsits: " + res);
                         }
-                    );                                        
+                    );                                                            
                 */
-
-                starNotary.createStar(
-                    starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: web3.eth.defaultAccount}, 
-                    function (error, result) {    
-                        if (!error) {
-
-                            console.log(result);
-
-                            /*
-                            var starClaimedEvent = starNotary.starClaimed({from: account});
-                            starClaimedEvent.watch(function(error, result) {
-                                if (!error) {
-                                    location.reload();
-                                } else {
-                                    console.log('watching for star claimed event is failing');
-                                }
-                            });
-                            */
-                        } else { 
-                            console.log(error);
-                        }
-                    });      
-              
             }
         </script>
     </body>
