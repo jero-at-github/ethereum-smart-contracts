@@ -25,7 +25,7 @@ contract('StarNotary', accounts => {
         })
 
         it('can create a star and get its name', async function () {                         
-
+            
             // check if the star was correctly created
             let createdStar = await this.contract.tokenIdToStarInfo(starId);
 
@@ -58,7 +58,9 @@ contract('StarNotary', accounts => {
         })
 
         it('user1 can put up their star for sale', async function () { 
-            assert.equal(await this.contract.ownerOf(starId), user1)
+
+            let ownerOfStar = await this.contract.ownerOf(starId);
+            assert.equal(ownerOfStar, user1)
             await this.contract.putStarUpForSale(starId, starPrice, {from: user1})
             
             assert.equal(await this.contract.starsForSale(starId), starPrice)
