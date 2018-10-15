@@ -75,7 +75,12 @@ contract StarNotary is ERC721 {
 
         return result;
     }    
+
+    function helloWorld() pure public returns(string) {
+        return "Hello world";
+    }
     
+    /*
     function approve(address _approved, uint256 _tokenId) public {
         this.approve(_approved, _tokenId);
     }
@@ -98,5 +103,6 @@ contract StarNotary is ERC721 {
 
     function ownerOf(uint256 _tokenId) public view returns (address) {
         return this.ownerOf(_tokenId);
-    }   
+    }     
+    */  
 }
