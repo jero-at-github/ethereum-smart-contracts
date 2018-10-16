@@ -7,9 +7,12 @@
         <link rel="stylesheet" type="text/css" href="style.css">
 
         <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script> -->
     </head>
 
     <body>
+        <div id="env"></div>
+        <div id="web3Version"></div>
         <div class="container">
             <h1>Star Notary</h1>
 
@@ -38,42 +41,41 @@
                     "mag_245.978"
                 ];
         
-            var environment = "rinkeby"; // ganache, rinkeby                
-                
+            var environment = "rinkeby"; // ganache, rinkeby   
+                            
             var ganacheUrl = "HTTP://127.0.0.1:7545";
             var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
 
             var myAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";
 
-            var myContractAddress = "0x3930c1568d83B15aE210b1C426D55c73bF3fD74B"; //"0x5CaFfA5D1c124b7769B2ED59A6bd4dEa173e57F5"
+            var myContractAddress = "0x70F51C61C713B26056150dC2043Bc1a7a7A14F1d"; //"0x3930c1568d83B15aE210b1C426D55c73bF3fD74B"
             var ganacheContractAddress = "0x44c0a70fa1f78ddd313921c67903154df085350b";
 
             if(typeof web3 != 'undefined') { 
 
                 // case with Metamask
-                web3 = new Web3(web3.currentProvider)
-                console.log("Using Metamask");
+                environment = "Metamaks";
+                web3 = new Web3(web3.currentProvider)                
             }                
             else if (environment == "ganache") {
                 
                 // ganache
-                web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));
-                console.log("Using Infura API");
+                web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));                
             } 
             else if (environment == "rinkeby") {
 
                 // infura
-                web3 = new Web3(new Web3.providers.HttpProvider(infuraUrl));
-                console.log("Using Infura API");
+                web3 = new Web3(new Web3.providers.HttpProvider(infuraUrl));                
             }
 
+            document.getElementById("env").innerHTML = "Using <strong>" + environment + "</strong> enviroment.";
+
             if(!web3.isConnected()) { 
-                console.log("Web3 is not connected!");
-                alert("Web3 is not connected!");
+                
+                document.getElementById("web3Version").innerHTML = "Web3 is not connected!";                
             } else {
-                console.log("Web3 is now connected to: " + environment);                        
                 var version = web3.version.api;                
-                console.log("Web3 version: " + version);
+                document.getElementById("web3Version").innerHTML = "Web3 is now connected. Version: " + version;                                
             }
             
             if (environment == "ganache") {
@@ -82,10 +84,10 @@
             }
             else {
                 web3.eth.defaultAccount = myAccount;
-            }                        
+            }                                  
 
             // The interface definition for your smart contract (the ABI) 
-            var StarNotary = web3.eth.contract(
+            var StarNotaryContract = web3.eth.contract(
                 [
                     {
                     "constant": true,
@@ -528,29 +530,31 @@
                     "type": "function"
                     }
                 ]
-            );            
+            );                        
 
             // Grab the contract at specified deployed address with the interface defined by the ABI
             var starNotary;
 
             if (environment == "ganache") {
-                starNotary = StarNotary.at(ganacheContractAddress);
+                starNotary = StarNotaryContract.at(ganacheContractAddress);
             }
             else {
-                starNotary = StarNotary.at(myContractAddress);
+                starNotary = StarNotaryContract.at(myContractAddress);
             }                                                
                         
             // Enable claim button being clicked
             function claimButtonClicked() { 
              
-                starNotary.helloWorld(function(error, result) {
+                starNotary.helloWorld.call(function(error, result) {
+debugger;                    
                     alert("hello world = " + result);
                 });             
                 
+                /*
                 // watch the Transfer event
                 var starClaimedEvent = starNotary.Transfer();     
                 starClaimedEvent.watch(function(error, result) {
-                    if (!error) {
+                    if (!error) {                        
                         alert(result);
                     } else {
                         console.log('watching for star claimed event is failing');
@@ -562,12 +566,12 @@
                     starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: web3.eth.defaultAccount}, 
                     function (error, result) {    
                         if (!error) {
-
                             console.log(result);                           
                         } else { 
                             console.log(error);
                         }
-                    });     
+                    });  
+                */   
                     
                 // check if the star exsits
                 /*    
