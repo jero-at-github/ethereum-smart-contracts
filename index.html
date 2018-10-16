@@ -547,10 +547,9 @@
                     alert("hello world = " + result);
                 });             
                 
-                
+                // watch the Transfer event
                 var starClaimedEvent = starNotary.Transfer();     
-
-                 starClaimedEvent.watch(function(error, result) {
+                starClaimedEvent.watch(function(error, result) {
                     if (!error) {
                         alert(result);
                     } else {
