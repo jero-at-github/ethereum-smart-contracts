@@ -1,10 +1,10 @@
 pragma solidity ^0.4.23;
 
-import '../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721.sol';
+import "../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
 
 contract StarNotary is ERC721 { 
 
-     struct Star { 
+    struct Star { 
         string name;
         string story;
         string dec;
@@ -76,7 +76,7 @@ contract StarNotary is ERC721 {
         return result;
     }    
 
-    function helloWorld() pure public returns(string) {
+    function helloWorld() public pure returns(string) {
         return "Hello world";
     }
     
