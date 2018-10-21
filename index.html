@@ -43,6 +43,7 @@
             </div>
 
             <button id="claim-button" onclick="claimButtonClicked()">Claim Star</button>
+            <button id="claim-button" onclick="checkIfStarExist()">Check Star existence</button>            
         </div>
 
         <script>           
@@ -56,20 +57,20 @@
 
             var myAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";
 
-            var rinkebyContractAddress = "0x5a4f76f1a8b9063835a4161d9a00dca38345bea0";
+            var rinkebyContractAddress = "0xa0f3a34132a925ab7fbc18e1abd1822d82246578";
             var ganacheContractAddress = "0xce665c6f20bfe35cfb729e977c6d3aae3f48aa36";
-
-            if(typeof web3 != 'undefined') { 
+          
+            if (environment == "ganache") {
+                
+                // ganache
+                web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));                
+            } 
+            else if(typeof web3 != 'undefined') { 
 
                 // case with Metamask
                 environment = "Metamaks";
                 web3 = new Web3(web3.currentProvider)                
             }                
-            else if (environment == "ganache") {
-                
-                // ganache
-                web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));                
-            } 
             else if (environment == "rinkeby") {
 
                 // infura
@@ -123,12 +124,9 @@
                     );                     
             }
 
-            // Enable claim button being clicked
-            function claimButtonClicked() { 
-                                          
-                // watch the Transfer event
+            // watch the Transfer event
             
-                var starClaimedEvent = starNotary.Transfer();     
+            var starClaimedEvent = starNotary.Transfer();     
                 starClaimedEvent.watch(function(error, result) {
                     if (!error) {      
                         
@@ -139,8 +137,11 @@
                     } else {
                         console.log('watching for star claimed event is failing');
                     }
-                });             
-                               
+            });             
+
+            // Enable claim button being clicked
+            function claimButtonClicked() { 
+                                                                                         
                 // estimate needed gas to call "createStar"
                 var estimatedGas = 3000000;
 
@@ -150,12 +151,11 @@
                     document.querySelector("#star-ra").value, 
                     document.querySelector("#star-dec").value, 
                     document.querySelector("#star-id").value,
-                    starId, {from: web3.eth.defaultAccount}, function(error, result) {
-                    
+                    starId, {from: web3.eth.defaultAccount}, function(error, result) {                                            
+
                         if (result) {
-                            estimatedGas = result;
-                            alert("Estimated gas is: " + estimatedGas);
-                        }
+                            estimatedGas = result;                            
+                        }                        
 
                         // create star
                         starNotary.createStar(
