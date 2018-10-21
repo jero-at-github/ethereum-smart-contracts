@@ -18,6 +18,8 @@ contract StarNotary is ERC721 {
 
     function createStar(string _name, string _story, string _dec, string _mag, string _cent, uint256 _tokenId) public { 
 
+        require(checkIfStarExist(_name, _story, _dec, _mag, _cent) == false, "This star was already claimed!");
+
         // create instance of Start
         Star memory newStar = Star(_name, _story, _dec, _mag, _cent);
 
@@ -30,17 +32,17 @@ contract StarNotary is ERC721 {
     }           
 
     function putStarUpForSale(uint256 _tokenId, uint256 _price) public { 
-        require(this.ownerOf(_tokenId) == msg.sender);
+        require(this.ownerOf(_tokenId) == msg.sender, "You can't sell a star which doesn't belong to you");
 
         starsForSale[_tokenId] = _price;
     }
 
     function buyStar(uint256 _tokenId) public payable { 
-        require(starsForSale[_tokenId] > 0);
+        require(starsForSale[_tokenId] > 0, "The star you try to buy is not for sale");
         
         uint256 starCost = starsForSale[_tokenId];
         address starOwner = this.ownerOf(_tokenId);
-        require(msg.value >= starCost);
+        require(msg.value >= starCost, "Your price doesn't fit with the star price");
 
         _removeTokenFrom(starOwner, _tokenId);
         _addTokenTo(msg.sender, _tokenId);
@@ -62,10 +64,10 @@ contract StarNotary is ERC721 {
             Star memory currentStar = tokenIdToStarInfo[currentTokenId];
 
             if (
-                keccak256(currentStar.name)     == keccak256(_name) && 
-                keccak256(currentStar.story)    == keccak256(_story) && 
-                keccak256(currentStar.dec)      == keccak256(_dec) && 
-                keccak256(currentStar.mag)      == keccak256(_mag) && 
+                keccak256(currentStar.name)     == keccak256(_name) &&
+                keccak256(currentStar.story)    == keccak256(_story) &&
+                keccak256(currentStar.dec)      == keccak256(_dec) &&
+                keccak256(currentStar.mag)      == keccak256(_mag) &&
                 keccak256(currentStar.cent)     == keccak256(_cent) ) {
                 
                 result = true;
