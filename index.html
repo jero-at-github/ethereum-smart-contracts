@@ -42,14 +42,14 @@
                     "mag_245.978"
                 ];
         
-            var environment = "ganache"; // ganache, rinkeby   
+            var environment = "rinkeby"; // ganache, rinkeby   
                             
             var ganacheUrl = "HTTP://127.0.0.1:7545";
             var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
 
             var myAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";
 
-            var rinkebyContractAddress = "0xf1875859ba413d6d82ed6cbd06e90d3f9e599de3";
+            var rinkebyContractAddress = "0xb3124674ec3e66cf1b5d0ccb8145daf691f67e03";
             var ganacheContractAddress = "0xce665c6f20bfe35cfb729e977c6d3aae3f48aa36";
 
             if(typeof web3 != 'undefined') { 
@@ -123,28 +123,35 @@
             
                 var starClaimedEvent = starNotary.Transfer();     
                 starClaimedEvent.watch(function(error, result) {
-                    if (!error) {                              
-                        alert(result);
+                    if (!error) {      
+                        
+                        // check if the star exists                         
+                        checkIfStarExist();
+
+                        console.dir(result);
                     } else {
                         console.log('watching for star claimed event is failing');
                     }
                 });             
                                
-                // create a star                
-                var estimatedGas = starNotary.createStar.estimateGas(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: web3.eth.defaultAccount});                
-                
-                starNotary.createStar(
+                // estimate needed gas to call "createStar"
+                var estimatedGas = 3000000;
+                starNotary.createStar.estimateGas(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: web3.eth.defaultAccount}, function(error, result) {
+                    estimatedGas = result;
+
+                    // create star
+                    starNotary.createStar(
                         starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, 
                         {gas: estimatedGas, from: web3.eth.defaultAccount}, 
                         function (error, result) {    
                             if (!error) {      
 
-                                console.log(result);                           
-                                checkIfStarExist();
+                                console.log(result);  
                             } else { 
                                 console.log(error);
                             }
-                        });                                                                                                                          
+                        });                    
+                });                                                                                                                                                     
             }
         </script>
     </body>
