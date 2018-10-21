@@ -16,15 +16,30 @@
         <div id="web3Version"></div>
         <div class="container">
             <h1>Star Notary</h1>
-
+            
+            <div class="row">
+                <label class="bold">Star Id:</label>
+                <input type="text" id="star-id" value="1" />
+            </div>
             <div class="row">
                 <label class="bold">Star Name:</label>
-                <label id="star-name"></label>
+                <input type="text" id="star-name" value="Star power 103!" />
             </div>
-
             <div class="row">
-                <label class="bold">Star Owner:</label>
-                <label id="star-owner"></label>
+                <label class="bold">Star Description:</label>
+                <input type="text" id="star-desc" value="I love my wonderful star" />
+            </div>
+            <div class="row">
+                <label class="bold">Star RA:</label>
+                <input type="text" id="star-ra" value="ra_032.155" />
+            </div>
+            <div class="row">
+                <label class="bold">Star DEC:</label>
+                <input type="text" id="star-dec" value="dec_121.874" />
+            </div>
+            <div class="row">
+                <label class="bold">Star MAG:</label>
+                <input type="text" id="star-mag" value="mag_245.978" />
             </div>
 
             <button id="claim-button" onclick="claimButtonClicked()">Claim Star</button>
@@ -32,15 +47,7 @@
 
         <script>           
 
-            var starId = 1;
-
-            var starTestData = [
-                    "Star power 103!", 
-                    "I love my wonderful star", 
-                    "ra_032.155", 
-                    "dec_121.874", 
-                    "mag_245.978"
-                ];
+            var starId = 11;            
         
             var environment = "rinkeby"; // ganache, rinkeby   
                             
@@ -49,7 +56,7 @@
 
             var myAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";
 
-            var rinkebyContractAddress = "0xb3124674ec3e66cf1b5d0ccb8145daf691f67e03";
+            var rinkebyContractAddress = "0x5a4f76f1a8b9063835a4161d9a00dca38345bea0";
             var ganacheContractAddress = "0xce665c6f20bfe35cfb729e977c6d3aae3f48aa36";
 
             if(typeof web3 != 'undefined') { 
@@ -105,11 +112,11 @@
                 // check if the star exsits                      
                 starNotary.
                     checkIfStarExist(
-                        starTestData[0], 
-                        starTestData[1], 
-                        starTestData[2], 
-                        starTestData[3], 
-                        starTestData[4],                         
+                        document.querySelector("#star-name").value, 
+                        document.querySelector("#star-desc").value, 
+                        document.querySelector("#star-ra").value, 
+                        document.querySelector("#star-dec").value, 
+                        document.querySelector("#star-mag").value, 
                         function(error, res) {
                             alert("Star exist: " + res);
                         }
@@ -136,21 +143,37 @@
                                
                 // estimate needed gas to call "createStar"
                 var estimatedGas = 3000000;
-                starNotary.createStar.estimateGas(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: web3.eth.defaultAccount}, function(error, result) {
-                    estimatedGas = result;
 
-                    // create star
-                    starNotary.createStar(
-                        starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, 
-                        {gas: estimatedGas, from: web3.eth.defaultAccount}, 
-                        function (error, result) {    
-                            if (!error) {      
+                starNotary.createStar.estimateGas( 
+                    document.querySelector("#star-name").value, 
+                    document.querySelector("#star-desc").value, 
+                    document.querySelector("#star-ra").value, 
+                    document.querySelector("#star-dec").value, 
+                    document.querySelector("#star-id").value,
+                    starId, {from: web3.eth.defaultAccount}, function(error, result) {
+                    
+                        if (result) {
+                            estimatedGas = result;
+                            alert("Estimated gas is: " + estimatedGas);
+                        }
 
-                                console.log(result);  
-                            } else { 
-                                console.log(error);
-                            }
-                        });                    
+                        // create star
+                        starNotary.createStar(
+                            document.querySelector("#star-name").value, 
+                            document.querySelector("#star-desc").value, 
+                            document.querySelector("#star-ra").value, 
+                            document.querySelector("#star-dec").value, 
+                            document.querySelector("#star-mag").value, 
+                            document.querySelector("#star-id").value, 
+                            {gas: estimatedGas, from: web3.eth.defaultAccount}, 
+                            function (error, result) {    
+                                if (!error) {      
+
+                                    console.log(result);  
+                                } else { 
+                                    console.log(error);
+                                }
+                            });                    
                 });                                                                                                                                                     
             }
         </script>
