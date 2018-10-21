@@ -47,18 +47,17 @@
         </div>
 
         <script>           
-
-            var starId = 11;            
-        
-            var environment = "rinkeby"; // ganache, rinkeby   
+                            
+            var environment = "ganache"; // ganache, rinkeby   
                             
             var ganacheUrl = "HTTP://127.0.0.1:7545";
             var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
 
-            var myAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";
+            var account;
+            var rinkebyAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";            
 
             var rinkebyContractAddress = "0xa0f3a34132a925ab7fbc18e1abd1822d82246578";
-            var ganacheContractAddress = "0xce665c6f20bfe35cfb729e977c6d3aae3f48aa36";
+            var ganacheContractAddress = "0x1c32eea5748ed3fae89a9b494a63a9f5ec2566d4";
           
             if (environment == "ganache") {
                 
@@ -69,7 +68,7 @@
 
                 // case with Metamask
                 environment = "Metamaks";
-                web3 = new Web3(web3.currentProvider)                
+                web3 = new Web3(web3.currentProvider);                
             }                
             else if (environment == "rinkeby") {
 
@@ -89,10 +88,10 @@
             
             if (environment == "ganache") {
                 // The default (top) wallet account from a list of test accounts 
-                web3.eth.defaultAccount = web3.eth.accounts[0];
+                account = web3.eth.accounts[0];
             }
             else {
-                web3.eth.defaultAccount = myAccount;
+                account = rinkebyAccount;
             }                                  
 
             // The interface definition for your smart contract (the ABI) 
@@ -125,23 +124,28 @@
             }
 
             // watch the Transfer event
-            
-            var starClaimedEvent = starNotary.Transfer();     
-                starClaimedEvent.watch(function(error, result) {
-                    if (!error) {      
-                        
-                        // check if the star exists                         
-                        checkIfStarExist();
-
-                        console.dir(result);
-                    } else {
-                        console.log('watching for star claimed event is failing');
-                    }
-            });             
+            var starClaimedEvent;
+               
 
             // Enable claim button being clicked
             function claimButtonClicked() { 
-                                                                                         
+                
+                if (!starClaimedEvent) {
+
+                    starClaimedEvent = starNotary.Transfer();     
+                        starClaimedEvent.watch(function(error, result) {
+                            if (!error) {      
+                                
+                                // check if the star exists                         
+                                checkIfStarExist();
+
+                                console.dir(result);
+                            } else {
+                                console.log('watching for star claimed event is failing');
+                            }
+                        });        
+                }                
+
                 // estimate needed gas to call "createStar"
                 var estimatedGas = 3000000;
 
@@ -150,8 +154,9 @@
                     document.querySelector("#star-desc").value, 
                     document.querySelector("#star-ra").value, 
                     document.querySelector("#star-dec").value, 
+                    document.querySelector("#star-mag").value, 
                     document.querySelector("#star-id").value,
-                    starId, {from: web3.eth.defaultAccount}, function(error, result) {                                            
+                    {from: account}, function(error, result) {                                            
 
                         if (result) {
                             estimatedGas = result;                            
@@ -165,7 +170,7 @@
                             document.querySelector("#star-dec").value, 
                             document.querySelector("#star-mag").value, 
                             document.querySelector("#star-id").value, 
-                            {gas: estimatedGas, from: web3.eth.defaultAccount}, 
+                            {gas: estimatedGas, from: account}, 
                             function (error, result) {    
                                 if (!error) {      
 
