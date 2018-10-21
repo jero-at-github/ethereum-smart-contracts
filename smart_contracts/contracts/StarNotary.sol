@@ -23,11 +23,11 @@ contract StarNotary is ERC721 {
 
         tokenIdToStarInfo[_tokenId] = newStar;
 
-        _mint(msg.sender, _tokenId);
+        //_mint(msg.sender, _tokenId);
 
         // save the tokenId
-        generatedTokenIds.push(_tokenId);    
-    }
+        generatedTokenIds.push(_tokenId);          
+    }           
 
     function putStarUpForSale(uint256 _tokenId, uint256 _price) public { 
         require(this.ownerOf(_tokenId) == msg.sender);
@@ -52,7 +52,7 @@ contract StarNotary is ERC721 {
         }
     }
   
-    function checkIfStarExist(string _name,  string _story, string _dec, string _mag, string _cent) view public returns(bool) {
+    function checkIfStarExist(string _name,  string _story, string _dec, string _mag, string _cent) public view returns(bool) {
 
         bool result = false;
 
@@ -74,11 +74,7 @@ contract StarNotary is ERC721 {
         }
 
         return result;
-    }    
-
-    function helloWorld() public pure returns(string) {
-        return "Hello world";
-    }
+    }     
     
     /*
     function approve(address _approved, uint256 _tokenId) public {
