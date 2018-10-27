@@ -48,7 +48,7 @@
                     <td>
                         <div class="row">
                             <label class="bold">Star Id:</label>
-                            <input type="number" id="star-id" value="" />
+                            <input type="number" id="lu-star-id" value="" />
                         </div>                        
                     </td>
                     <td>
@@ -74,7 +74,7 @@
                     </td>
                     <td>
                         <div class="centered">
-                            <button id="lookup-button" onclick="checkIfStarExist()">Look up</button>  
+                            <button id="lookup-button" onclick="lookupStar()">Look up</button>  
                         </div>
                     </td>
                     <td>    
@@ -89,7 +89,7 @@
 
         <script>           
                             
-            var environment = "rinkeby"; // ganache, rinkeby   
+            var environment = "ganache"; // ganache, rinkeby   
                             
             var ganacheUrl = "HTTP://127.0.0.1:7545";
             var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
@@ -98,7 +98,7 @@
             var rinkebyAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";            
 
             var rinkebyContractAddress = "0x14b215cb37518d89e3b3998329562a099d700b4e";
-            var ganacheContractAddress = "0x1c32eea5748ed3fae89a9b494a63a9f5ec2566d4";
+            var ganacheContractAddress = "0xce665c6f20bfe35cfb729e977c6d3aae3f48aa36";
           
             if (environment == "ganache") {
                 
@@ -153,42 +153,40 @@
                 // check if the star exsits                      
                 starNotary.
                     checkIfStarExist(
-                        document.querySelector("#star-name").value, 
-                        document.querySelector("#star-desc").value, 
-                        document.querySelector("#star-ra").value, 
-                        document.querySelector("#star-dec").value, 
-                        document.querySelector("#star-mag").value, 
+                        document.querySelector("#check-star-ra").value, 
+                        document.querySelector("#check-star-dec").value, 
+                        document.querySelector("#check-star-mag").value, 
                         function(error, res) {
                             alert("Star exist: " + res);
                         }
                     );                     
             }
 
+            /**
+             Lookup a star
+             */ 
+            function lookupStar() {
+
+                let id =  document.querySelector("#lu-star-id").value;
+                alert(starNotary.tokenIdToStarInfo(id));
+            }
+
             // watch the Transfer event
-            var starClaimedEvent;
-               
+            var starClaimedEvent = starNotary.Transfer();                        
+            starClaimedEvent.watch(function(error, result) {
+                if (!error) {      
+                                       
+                    alert(result);
+                } else {
+                    alert('watching for star claimed event is failing');
+                }
+            });        
 
             // Enable claim button being clicked
             function claimButtonClicked() { 
-                
-                if (!starClaimedEvent) {
-
-                    starClaimedEvent = starNotary.Transfer();     
-                        starClaimedEvent.watch(function(error, result) {
-                            if (!error) {      
-                                
-                                // check if the star exists                         
-                                checkIfStarExist();
-
-                                console.dir(result);
-                            } else {
-                                console.log('watching for star claimed event is failing');
-                            }
-                        });        
-                }                
-
+                                         
                 // estimate needed gas to call "createStar"
-                var estimatedGas = 3000000;
+                var defaultEstimatedGas = 3000000;
 
                 starNotary.createStar.estimateGas( 
                     document.querySelector("#star-name").value, 
@@ -200,7 +198,7 @@
                     {from: account}, function(error, result) {                                            
 
                         if (result) {
-                            estimatedGas = result;                            
+                            defaultEstimatedGas = result;                            
                         }                        
 
                         // create star
@@ -211,16 +209,16 @@
                             document.querySelector("#star-dec").value, 
                             document.querySelector("#star-mag").value, 
                             document.querySelector("#star-id").value, 
-                            {gas: estimatedGas, from: account}, 
+                            {gas: defaultEstimatedGas, from: account}, 
                             function (error, result) {    
                                 if (!error) {      
 
-                                    console.log(result);  
+                                    alert(result);  
                                 } else { 
-                                    console.log(error);
+                                    alert(error);
                                 }
                             });                    
-                });                                                                                                                                                     
+                });                                
             }
         </script>
     </body>
