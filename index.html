@@ -19,6 +19,11 @@
             
             <table>
                 <tr>
+                    <td class="header">STAR CREATION</h4></td>
+                    <td class="header">STAR LOOKUP</td>
+                    <td class="header">STAR EXISTENCE</td>
+                </tr>
+                <tr>
                     <td>
                         <div class="row">
                             <label class="bold">Star Id:</label>
@@ -48,7 +53,7 @@
                     <td>
                         <div class="row">
                             <label class="bold">Star Id:</label>
-                            <input type="number" id="lu-star-id" value="" />
+                            <input type="number" id="lu-star-id" value="1" />
                         </div>                        
                     </td>
                     <td>
@@ -83,8 +88,14 @@
                         </div>  
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="3">                        
+                        <textarea readonly id="log" rows="15" cols="125"></textarea>
+                        <button id="claim-button" onclick="clearLogs()">Clear</button>  
+                    </td>
+                </tr>
             </table>
-                     
+
         </div>
 
         <script>           
@@ -146,7 +157,15 @@
             }
             else {
                 starNotary = StarNotaryContract.at(rinkebyContractAddress);
-            }                                                
+            }                
+            
+            function clearLogs() {
+                document.querySelector("#log").value = "";
+            }
+
+            function log(message) {
+                document.querySelector("#log").value += message + "\n";
+            }
                     
             function checkIfStarExist() {
 
@@ -157,7 +176,7 @@
                         document.querySelector("#check-star-dec").value, 
                         document.querySelector("#check-star-mag").value, 
                         function(error, res) {
-                            alert("Star exist: " + res);
+                            log("Star exist: " + res);
                         }
                     );                     
             }
@@ -168,7 +187,7 @@
             function lookupStar() {
 
                 let id =  document.querySelector("#lu-star-id").value;
-                alert(starNotary.tokenIdToStarInfo(id));
+                log("Lookup for star id " + id + ": " + starNotary.tokenIdToStarInfo(id));
             }
 
             // watch the Transfer event
@@ -176,9 +195,9 @@
             starClaimedEvent.watch(function(error, result) {
                 if (!error) {      
                                        
-                    alert(result);
+                    log(result);
                 } else {
-                    alert('watching for star claimed event is failing');
+                    log('Watching for star claimed event is failing...');
                 }
             });        
 
@@ -213,9 +232,9 @@
                             function (error, result) {    
                                 if (!error) {      
 
-                                    alert(result);  
+                                    log(result);  
                                 } else { 
-                                    alert(error);
+                                    log(error);
                                 }
                             });                    
                 });                                

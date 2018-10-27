@@ -14,8 +14,8 @@ body {
     margin-bottom:10px;
 }
 button {
-    margin: 2em 0;
-    padding: 1em 4em;
+    
+    padding: 0.5em 0.5em;
     display:absolute;
 }
 
@@ -31,5 +31,14 @@ input {
 }
 
 .centered {
+    text-align: center;
+}
+
+#log {   
+    vertical-align: top;
+}
+
+.header {
+    font-weight: bold;
     text-align: center;
 }
