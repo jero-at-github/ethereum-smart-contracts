@@ -22,6 +22,7 @@
                     <td class="header">STAR CREATION</h4></td>
                     <td class="header">STAR LOOKUP</td>
                     <td class="header">STAR EXISTENCE</td>
+                    <td class="header">STAR SELL</td>
                 </tr>
                 <tr>
                     <td>
@@ -70,6 +71,16 @@
                             <input type="text" id="check-star-mag" value="mag_245.978" />
                         </div>                                    
                     </td>
+                    <td>
+                        <div class="row">
+                            <label class="bold">Star Id:</label>
+                            <input type="number" id="sale-star-id" value="1" />
+                        </div>                        
+                        <div class="row">
+                            <label class="bold">Value:</label>
+                            <input type="number" id="sale-value" value="0" />
+                        </div>                        
+                    </td>
                 </tr>
                 <tr>
                     <td>
@@ -87,9 +98,14 @@
                             <button id="claim-button" onclick="checkIfStarExist()">Check Star existence</button>  
                         </div>  
                     </td>
+                    <td>
+                        <div class="centered">
+                            <button id="sale-button" onclick="putStarForSale()">Put for sale</button>  
+                        </div>
+                    </td>
                 </tr>
                 <tr>
-                    <td colspan="3">                        
+                    <td colspan="4">                        
                         <textarea readonly id="log" rows="15" cols="125"></textarea>
                         <button id="claim-button" onclick="clearLogs()">Clear</button>  
                     </td>
@@ -110,7 +126,9 @@
 
             var rinkebyContractAddress = "0x211497e8e64af185d6d1a67cb2846037cd6d9630";
             var ganacheContractAddress = "0xce665c6f20bfe35cfb729e977c6d3aae3f48aa36";
-          
+                      
+            var defaultEstimatedGas = 3000000;
+
             if (environment == "ganache") {
                 
                 // ganache
@@ -182,6 +200,27 @@
             }
 
             /**
+             Put a star for sale
+             */
+            function putStarForSale() {
+
+                let id = document.querySelector("#sale-star-id").value;
+                let value = document.querySelector("#sale-value").value;
+
+                starNotary.putStarUpForSale(
+                    id, value, 
+                    {gas: defaultEstimatedGas, from: account}, 
+                    function (error, result) {
+                        if (!error) {
+                            log("Put for sale star id " + id + ". Waiting for confirmation of transaction: " + result)
+                        }
+                        else {
+                            log(error);
+                        }
+                    });
+            }
+
+            /**
              Lookup a star
              */ 
             function lookupStar() {
@@ -218,10 +257,7 @@
             });        
 
             // Enable claim button being clicked
-            function claimButtonClicked() { 
-                                         
-                // estimate needed gas to call "createStar"
-                var defaultEstimatedGas = 3000000;
+            function claimButtonClicked() {                                                         
 
                 starNotary.createStar.estimateGas( 
                     document.querySelector("#star-name").value, 
