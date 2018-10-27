@@ -16,5 +16,20 @@ body {
 button {
     margin: 2em 0;
     padding: 1em 4em;
-    display:block;
+    display:absolute;
+}
+
+td {
+    vertical-align: top;
+    border: solid 1px #CCC;
+    padding: 10px 10px 10px 10px;
+}
+
+input {
+    float: right;
+    margin-left: 5px;
+}
+
+.centered {
+    text-align: center;
 }

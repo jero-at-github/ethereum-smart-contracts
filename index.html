@@ -17,33 +17,74 @@
         <div class="container">
             <h1>Star Notary</h1>
             
-            <div class="row">
-                <label class="bold">Star Id:</label>
-                <input type="text" id="star-id" value="1" />
-            </div>
-            <div class="row">
-                <label class="bold">Star Name:</label>
-                <input type="text" id="star-name" value="Star power 103!" />
-            </div>
-            <div class="row">
-                <label class="bold">Star Description:</label>
-                <input type="text" id="star-desc" value="I love my wonderful star" />
-            </div>
-            <div class="row">
-                <label class="bold">Star RA:</label>
-                <input type="text" id="star-ra" value="ra_032.155" />
-            </div>
-            <div class="row">
-                <label class="bold">Star DEC:</label>
-                <input type="text" id="star-dec" value="dec_121.874" />
-            </div>
-            <div class="row">
-                <label class="bold">Star MAG:</label>
-                <input type="text" id="star-mag" value="mag_245.978" />
-            </div>
-
-            <button id="claim-button" onclick="claimButtonClicked()">Claim Star</button>
-            <button id="claim-button" onclick="checkIfStarExist()">Check Star existence</button>            
+            <table>
+                <tr>
+                    <td>
+                        <div class="row">
+                            <label class="bold">Star Id:</label>
+                            <input type="number" id="star-id" value="1" />
+                        </div>
+                        <div class="row">
+                            <label class="bold">Star Name:</label>
+                            <input type="text" id="star-name" value="Star power 103!" />
+                        </div>
+                        <div class="row">
+                            <label class="bold">Star Description:</label>
+                            <input type="text" id="star-desc" value="I love my wonderful star" />
+                        </div>
+                        <div class="row">
+                            <label class="bold">Star RA:</label>
+                            <input type="text" id="star-ra" value="ra_032.155" />
+                        </div>
+                        <div class="row">
+                            <label class="bold">Star DEC:</label>
+                            <input type="text" id="star-dec" value="dec_121.874" />
+                        </div>
+                        <div class="row">
+                            <label class="bold">Star MAG:</label>
+                            <input type="text" id="star-mag" value="mag_245.978" />
+                        </div>                                    
+                    </td>
+                    <td>
+                        <div class="row">
+                            <label class="bold">Star Id:</label>
+                            <input type="number" id="star-id" value="" />
+                        </div>                        
+                    </td>
+                    <td>
+                        <div class="row">
+                            <label class="bold">Star RA:</label>
+                            <input type="text" id="check-star-ra" value="ra_032.155" />
+                        </div>
+                        <div class="row">
+                            <label class="bold">Star DEC:</label>
+                            <input type="text" id="check-star-dec" value="dec_121.874" />
+                        </div>
+                        <div class="row">
+                            <label class="bold">Star MAG:</label>
+                            <input type="text" id="check-star-mag" value="mag_245.978" />
+                        </div>                                    
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="centered">
+                            <button id="claim-button" onclick="claimButtonClicked()">Claim Star</button>                        
+                        </div>                        
+                    </td>
+                    <td>
+                        <div class="centered">
+                            <button id="lookup-button" onclick="checkIfStarExist()">Look up</button>  
+                        </div>
+                    </td>
+                    <td>    
+                        <div class="centered">                
+                            <button id="claim-button" onclick="checkIfStarExist()">Check Star existence</button>  
+                        </div>  
+                    </td>
+                </tr>
+            </table>
+                     
         </div>
 
         <script>           

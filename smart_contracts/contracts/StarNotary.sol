@@ -16,28 +16,31 @@ contract StarNotary is ERC721 {
     mapping(uint256 => uint256) public starsForSale;
     uint256[] generatedTokenIds;   
 
+    /**
+    Create a new star
+    */
     function createStar(string _name, string _story, string _dec, string _mag, string _cent, uint256 _tokenId) public { 
 
-        require(checkIfStarExist(_name, _story, _dec, _mag, _cent) == false, "This star was already claimed!");
-
-        // create instance of Start
-        Star memory newStar = Star(_name, _story, _dec, _mag, _cent);
-
-        tokenIdToStarInfo[_tokenId] = newStar;
-
-        _mint(msg.sender, _tokenId);
-
-        // save the tokenId
-        generatedTokenIds.push(_tokenId);          
+        // ensure the star doesn't exist already (coordinate check)
+        require(checkIfStarExist(_dec, _mag, _cent) == false, "This star was already claimed!");
+        
+        Star memory newStar = Star(_name, _story, _dec, _mag, _cent);   // create instance of Start
+        tokenIdToStarInfo[_tokenId] = newStar;                          // save the newStar object in the tokenIdToStarInfo hash table
+        _mint(msg.sender, _tokenId);                                    // mint the new star        
+        generatedTokenIds.push(_tokenId);                               // save the tokenId in the generatedTokenIds array
     }           
 
+    /**
+    Put a star for sale
+    */
     function putStarUpForSale(uint256 _tokenId, uint256 _price) public { 
-        require(this.ownerOf(_tokenId) == msg.sender, "You can't sell a star which doesn't belong to you");
 
+        require(this.ownerOf(_tokenId) == msg.sender, "You can't sell a star which doesn't belong to you");
         starsForSale[_tokenId] = _price;
     }
 
     function buyStar(uint256 _tokenId) public payable { 
+
         require(starsForSale[_tokenId] > 0, "The star you try to buy is not for sale");
         
         uint256 starCost = starsForSale[_tokenId];
@@ -53,8 +56,11 @@ contract StarNotary is ERC721 {
             msg.sender.transfer(msg.value - starCost);
         }
     }
-  
-    function checkIfStarExist(string _name,  string _story, string _dec, string _mag, string _cent) public view returns(bool) {
+
+    /**
+    Utilizing star coordinates, this function will check if the coordinates have already been claimed
+    */
+    function checkIfStarExist(string _dec, string _mag, string _cent) public view returns(bool) {
 
         bool result = false;
 
@@ -64,11 +70,9 @@ contract StarNotary is ERC721 {
             Star memory currentStar = tokenIdToStarInfo[currentTokenId];
 
             if (
-                keccak256(currentStar.name)     == keccak256(_name) &&
-                keccak256(currentStar.story)    == keccak256(_story) &&
-                keccak256(currentStar.dec)      == keccak256(_dec) &&
-                keccak256(currentStar.mag)      == keccak256(_mag) &&
-                keccak256(currentStar.cent)     == keccak256(_cent) ) {
+                keccak256(currentStar.dec) == keccak256(_dec) &&
+                keccak256(currentStar.mag) == keccak256(_mag) &&
+                keccak256(currentStar.cent) == keccak256(_cent) ) {
                 
                 result = true;
             }
@@ -78,7 +82,6 @@ contract StarNotary is ERC721 {
         return result;
     }     
     
-    /*
     function approve(address _approved, uint256 _tokenId) public {
         this.approve(_approved, _tokenId);
     }
@@ -102,5 +105,4 @@ contract StarNotary is ERC721 {
     function ownerOf(uint256 _tokenId) public view returns (address) {
         return this.ownerOf(_tokenId);
     }     
-    */  
 }
