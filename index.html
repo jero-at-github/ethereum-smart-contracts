@@ -100,7 +100,7 @@
 
         <script>           
                             
-            var environment = "ganache"; // ganache, rinkeby   
+            var environment = "rinkeby"; // ganache, rinkeby   
                             
             var ganacheUrl = "HTTP://127.0.0.1:7545";
             var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
@@ -108,7 +108,7 @@
             var account;
             var rinkebyAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";            
 
-            var rinkebyContractAddress = "0x14b215cb37518d89e3b3998329562a099d700b4e";
+            var rinkebyContractAddress = "0x211497e8e64af185d6d1a67cb2846037cd6d9630";
             var ganacheContractAddress = "0xce665c6f20bfe35cfb729e977c6d3aae3f48aa36";
           
             if (environment == "ganache") {
@@ -187,7 +187,15 @@
             function lookupStar() {
 
                 let id =  document.querySelector("#lu-star-id").value;
-                log("Lookup for star id " + id + ": " + starNotary.tokenIdToStarInfo(id));
+                starNotary.tokenIdToStarInfo(id, function(error, result) {
+                    if (!error) {
+                        log("Lookup for star id " + id + ": " + result)  
+                    }
+                    else {
+                        log(error);
+                    }
+                    
+                });
             }
 
             // watch the Transfer event
@@ -240,7 +248,7 @@
                             function (error, result) {    
                                 if (!error) {      
 
-                                    log(result);  
+                                    log("Waiting for confirmation of transaction: " + result);  
                                 } else { 
                                     log(error);
                                 }
