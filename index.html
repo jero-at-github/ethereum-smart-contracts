@@ -194,8 +194,16 @@
             var starClaimedEvent = starNotary.Transfer();                        
             starClaimedEvent.watch(function(error, result) {
                 if (!error) {      
-                                       
-                    log(result);
+                    
+                    let message = "\n";
+
+                    for (var property in result) {
+                        if (result.hasOwnProperty(property)) {
+                            message += property + ":" + result[property] + "\n";
+                        }
+                    }
+
+                    log("Star was created sucessfully!: " + message);
                 } else {
                     log('Watching for star claimed event is failing...');
                 }
