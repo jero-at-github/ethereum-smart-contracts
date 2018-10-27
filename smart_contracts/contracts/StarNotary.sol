@@ -17,8 +17,8 @@ contract StarNotary is ERC721 {
     uint256[] generatedTokenIds;   
 
     /**
-    Create a new star
-    */
+     Create a new star
+     */
     function createStar(string _name, string _story, string _dec, string _mag, string _cent, uint256 _tokenId) public { 
 
         // ensure the star doesn't exist already (coordinate check)
@@ -31,8 +31,8 @@ contract StarNotary is ERC721 {
     }           
 
     /**
-    Put a star for sale
-    */
+     Put a star for sale
+     */
     function putStarUpForSale(uint256 _tokenId, uint256 _price) public { 
 
         require(this.ownerOf(_tokenId) == msg.sender, "You can't sell a star which doesn't belong to you");
@@ -58,8 +58,8 @@ contract StarNotary is ERC721 {
     }
 
     /**
-    Utilizing star coordinates, this function will check if the coordinates have already been claimed
-    */
+     Utilizing star coordinates, this function will check if the coordinates have already been claimed
+     */
     function checkIfStarExist(string _dec, string _mag, string _cent) public view returns(bool) {
 
         bool result = false;
@@ -80,8 +80,8 @@ contract StarNotary is ERC721 {
         }
 
         return result;
-    }     
-    
+    }         
+
     function approve(address _approved, uint256 _tokenId) public {
         this.approve(_approved, _tokenId);
     }
