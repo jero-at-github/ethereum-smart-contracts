@@ -39,6 +39,15 @@ window.addEventListener('load', function() {
         var version = web3.version.api;                
         document.querySelector("#web3Version").innerHTML = "Web3 is now connected. Version: " + version;                                
     }
+
+    let connectedAccount = "";
+    if (environment == "ganache") {
+        connectedAccount = ganacheContractAddress;
+    }
+    else {
+        connectedAccount = rinkebyContractAddress;
+    }  
+    document.querySelector("#connectedAccount").innerHTML = "Connected to account: " + connectedAccount;
 })
 
 if (environment == "ganache") {
