@@ -3,12 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Star Notary</title>
+        <title>Star Notary</title> 
         <link rel="stylesheet" type="text/css" href="style.css">
 
         <script src="./abi.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-        <!-- <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script> -->
+        <script src="./javascript.js"></script>        
     </head>
 
     <body>
@@ -120,240 +120,16 @@
                     <td colspan="5">                        
                         <textarea readonly id="log" rows="15" cols="145"></textarea>
                         <br />
-                        <button id="claim-button" onclick="clearLogs()">Clear</button>  
+                        <div style="float: left;">
+                            <button id="claim-button" onclick="clearLogs()">Clear</button>                                                  
+                        </div>
+                        <div style="float: left;">
+                            <img id="ajaxLoader" src="ajax-loader.gif" />
+                        </div>
                     </td>
                 </tr>
             </table>
 
         </div>
-
-        <script>           
-                            
-            var environment = "ganache"; // ganache, rinkeby   
-                            
-            var ganacheUrl = "HTTP://127.0.0.1:7545";
-            var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
-
-            var account;
-            var rinkebyAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";            
-
-            var rinkebyContractAddress = "0xe63b61b39317735f14204d8ad51c92588677e907";
-            var ganacheContractAddress = "0xca2a40c21ffdc6e84d7a1715ad36ebdaa23664d1";
-                      
-            var defaultEstimatedGas = 3000000;
-
-            if (environment == "ganache") {
-                
-                // ganache
-                web3 = new Web3(new Web3.providers.HttpProvider(ganacheUrl));                
-            } 
-            else if(typeof web3 != 'undefined') { 
-
-                // case with Metamask
-                environment = "Metamaks";
-                web3 = new Web3(web3.currentProvider);                
-            }                
-            else if (environment == "rinkeby") {
-
-                // infura
-                web3 = new Web3(new Web3.providers.HttpProvider(infuraUrl));                
-            }
-
-            document.getElementById("env").innerHTML = "Using <strong>" + environment + "</strong> enviroment.";
-
-            if(!web3.isConnected()) { 
-                
-                document.getElementById("web3Version").innerHTML = "Web3 is not connected!";                
-            } else {
-                var version = web3.version.api;                
-                document.getElementById("web3Version").innerHTML = "Web3 is now connected. Version: " + version;                                
-            }
-            
-            if (environment == "ganache") {
-                // The default (top) wallet account from a list of test accounts 
-                account = web3.eth.accounts[0];
-            }
-            else {
-                account = rinkebyAccount;
-            }                                  
-
-            // The interface definition for your smart contract (the ABI) 
-            var StarNotaryContract = web3.eth.contract(abi);                        
-
-            // Grab the contract at specified deployed address with the interface defined by the ABI
-            var starNotary;
-
-            if (environment == "ganache") {
-                starNotary = StarNotaryContract.at(ganacheContractAddress);
-            }
-            else {
-                starNotary = StarNotaryContract.at(rinkebyContractAddress);
-            }                
-            
-            function clearLogs() {
-                document.querySelector("#log").value = "";
-            }
-
-            function log(message) {
-                document.querySelector("#log").value += message + "\n";
-            }
-                    
-            function checkIfStarExist() {
-
-                // check if the star exsits                      
-                starNotary.
-                    checkIfStarExist(
-                        document.querySelector("#check-star-ra").value, 
-                        document.querySelector("#check-star-dec").value, 
-                        document.querySelector("#check-star-mag").value, 
-                        function(error, res) {
-                            log("Star exist: " + res);
-                        }
-                    );                     
-            }
-
-            /**
-             Put a star for sale
-             */
-            function putStarForSale() {
-
-                let estimatedGas = defaultEstimatedGas;
-                let id = document.querySelector("#sale-star-id").value;
-                let value = document.querySelector("#sale-value").value;
-
-                starNotary.putStarUpForSale.estimateGas( 
-                    id, 
-                    value,
-                    {from: account}, function(error, result) {                                            
-
-                        if (result) {
-                            estimatedGas = result;                            
-                        }                        
-
-                        starNotary.putStarUpForSale(
-                            id, 
-                            value,
-                            {gas: estimatedGas, from: account}, 
-                            function (error, result) {
-                                if (!error) {
-                                    log("Put for sale star id " + id + ". Waiting for confirmation of transaction: " + result)
-                                }
-                                else {
-                                    log(error);
-                                }
-                        });
-                });                        
-            }
-
-            /**
-             Lookup a star
-             */ 
-            function lookupStar() {
-
-                let id =  document.querySelector("#lu-star-id").value;
-                starNotary.tokenIdToStarInfo(id, function(error, result) {
-                    if (!error) {
-                        log("Lookup for star id " + id + ": " + result)  
-                    }
-                    else {
-                        log(error);
-                    }
-                    
-                });
-            }
-
-            /**
-             Ask for a star price
-             */
-            function askStarPrice() {
-
-                let id = document.querySelector("#price-star-id").value;
-                starNotary.starsForSale(id, function (error, result) {
-                    if (!error) {
-                        log("Price for star id " + id + ": " + result)
-                    }
-                    else {
-                        log(error);
-                    }
-
-                });
-            }
-            
-            // watch the Transfer event
-            var starClaimedEvent = starNotary.Transfer();                        
-            starClaimedEvent.watch(function(error, result) {
-                if (!error) {      
-                    
-                    let message = "\n";
-
-                    for (var property in result) {
-                        if (result.hasOwnProperty(property)) {
-                            message += property + ":" + result[property] + "\n";
-                        }
-                    }
-
-                    log("Star was created sucessfully!: " + message);
-                } else {
-                    log('Watching for star claimed event is failing...');
-                }
-            });        
-
-            // watch the PutForSell event          
-            var starPutForSellEvent = starNotary.PutForSell();                        
-            starPutForSellEvent.watch(function(error, result) {
-                if (!error) {      
-                    
-                    let message = "\n";
-
-                    for (var property in result) {
-                        if (result.hasOwnProperty(property)) {
-                            message += property + ":" + result[property] + "\n";
-                        }
-                    }
-
-                    log("Star was put for sell sucessfully!: " + message);
-                } else {
-                    log('Watching for star put for sell event is failing...');
-                }
-            });                    
-
-            // Enable claim button being clicked
-            function claimButtonClicked() {                                                         
-
-                let estimatedGas = defaultEstimatedGas;
-
-                starNotary.createStar.estimateGas( 
-                    document.querySelector("#star-name").value, 
-                    document.querySelector("#star-desc").value, 
-                    document.querySelector("#star-ra").value, 
-                    document.querySelector("#star-dec").value, 
-                    document.querySelector("#star-mag").value, 
-                    document.querySelector("#star-id").value,
-                    {from: account}, function(error, result) {                                            
-
-                        if (result) {
-                            estimatedGas = result;                            
-                        }                        
-
-                        // create star
-                        starNotary.createStar(
-                            document.querySelector("#star-name").value, 
-                            document.querySelector("#star-desc").value, 
-                            document.querySelector("#star-ra").value, 
-                            document.querySelector("#star-dec").value, 
-                            document.querySelector("#star-mag").value, 
-                            document.querySelector("#star-id").value, 
-                            {gas: estimatedGas, from: account}, 
-                            function (error, result) {    
-                                if (!error) {      
-
-                                    log("Waiting for confirmation of transaction: " + result);  
-                                } else { 
-                                    log(error);
-                                }
-                            });                    
-                });                                
-            }
-        </script>
     </body>
 </html>
