@@ -39,7 +39,7 @@ contract('StarNotary', accounts => {
         it('can create a star and check that it exists', async function () {   
 
             // check if the checkIfStarExist function works as expected
-            let isStarAlreadyRegistered = await this.contract.checkIfStarExist(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4]);
+            let isStarAlreadyRegistered = await this.contract.checkIfStarExist(starTestData[2], starTestData[3], starTestData[4]);
             assert.equal(isStarAlreadyRegistered, true, "The isStarAlreadyRegistered function failed");            
         })
     })
