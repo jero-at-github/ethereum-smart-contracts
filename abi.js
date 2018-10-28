@@ -118,6 +118,23 @@ var abi = [
       "inputs": [
         {
           "indexed": true,
+          "name": "_tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "name": "_price",
+          "type": "uint256"
+        }
+      ],
+      "name": "PutForSell",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
           "name": "from",
           "type": "address"
         },

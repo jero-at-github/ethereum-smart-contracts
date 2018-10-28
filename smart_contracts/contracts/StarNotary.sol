@@ -16,6 +16,11 @@ contract StarNotary is ERC721 {
     mapping(uint256 => uint256) public starsForSale;
     uint256[] generatedTokenIds;   
 
+    event PutForSell(
+        uint256 indexed _tokenId,
+        uint256 indexed _price
+    );
+
     /**
      Create a new star
      */
@@ -37,6 +42,7 @@ contract StarNotary is ERC721 {
 
         require(this.ownerOf(_tokenId) == msg.sender, "You can't sell a star which doesn't belong to you");
         starsForSale[_tokenId] = _price;
+        emit PutForSell(_tokenId, _price);         
     }
 
     function buyStar(uint256 _tokenId) public payable { 
@@ -82,6 +88,7 @@ contract StarNotary is ERC721 {
         return result;
     }         
 
+    /*
     function approve(address _approved, uint256 _tokenId) public {
         this.approve(_approved, _tokenId);
     }
@@ -104,5 +111,6 @@ contract StarNotary is ERC721 {
 
     function ownerOf(uint256 _tokenId) public view returns (address) {
         return this.ownerOf(_tokenId);
-    }     
+    } 
+    */    
 }

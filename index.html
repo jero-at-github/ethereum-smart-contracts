@@ -116,7 +116,7 @@
 
         <script>           
                             
-            var environment = "rinkeby"; // ganache, rinkeby   
+            var environment = "ganache"; // ganache, rinkeby   
                             
             var ganacheUrl = "HTTP://127.0.0.1:7545";
             var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
@@ -124,8 +124,8 @@
             var account;
             var rinkebyAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";            
 
-            var rinkebyContractAddress = "0x211497e8e64af185d6d1a67cb2846037cd6d9630";
-            var ganacheContractAddress = "0xce665c6f20bfe35cfb729e977c6d3aae3f48aa36";
+            var rinkebyContractAddress = "0xe63b61b39317735f14204d8ad51c92588677e907";
+            var ganacheContractAddress = "0xca2a40c21ffdc6e84d7a1715ad36ebdaa23664d1";
                       
             var defaultEstimatedGas = 3000000;
 
@@ -204,20 +204,32 @@
              */
             function putStarForSale() {
 
+                let estimatedGas = defaultEstimatedGas;
                 let id = document.querySelector("#sale-star-id").value;
                 let value = document.querySelector("#sale-value").value;
 
-                starNotary.putStarUpForSale(
-                    id, value, 
-                    {gas: defaultEstimatedGas, from: account}, 
-                    function (error, result) {
-                        if (!error) {
-                            log("Put for sale star id " + id + ". Waiting for confirmation of transaction: " + result)
-                        }
-                        else {
-                            log(error);
-                        }
-                    });
+                starNotary.putStarUpForSale.estimateGas( 
+                    id, 
+                    value,
+                    {from: account}, function(error, result) {                                            
+
+                        if (result) {
+                            estimatedGas = result;                            
+                        }                        
+
+                        starNotary.putStarUpForSale(
+                            id, 
+                            value,
+                            {gas: estimatedGas, from: account}, 
+                            function (error, result) {
+                                if (!error) {
+                                    log("Put for sale star id " + id + ". Waiting for confirmation of transaction: " + result)
+                                }
+                                else {
+                                    log(error);
+                                }
+                        });
+                });                        
             }
 
             /**
@@ -256,8 +268,29 @@
                 }
             });        
 
+            // watch the PutForSell event          
+            var starPutForSellEvent = starNotary.PutForSell();                        
+            starPutForSellEvent.watch(function(error, result) {
+                if (!error) {      
+                    
+                    let message = "\n";
+
+                    for (var property in result) {
+                        if (result.hasOwnProperty(property)) {
+                            message += property + ":" + result[property] + "\n";
+                        }
+                    }
+
+                    log("Star was put for sell sucessfully!: " + message);
+                } else {
+                    log('Watching for star put for sell event is failing...');
+                }
+            });                    
+
             // Enable claim button being clicked
             function claimButtonClicked() {                                                         
+
+                let estimatedGas = defaultEstimatedGas;
 
                 starNotary.createStar.estimateGas( 
                     document.querySelector("#star-name").value, 
@@ -269,7 +302,7 @@
                     {from: account}, function(error, result) {                                            
 
                         if (result) {
-                            defaultEstimatedGas = result;                            
+                            estimatedGas = result;                            
                         }                        
 
                         // create star
@@ -280,7 +313,7 @@
                             document.querySelector("#star-dec").value, 
                             document.querySelector("#star-mag").value, 
                             document.querySelector("#star-id").value, 
-                            {gas: defaultEstimatedGas, from: account}, 
+                            {gas: estimatedGas, from: account}, 
                             function (error, result) {    
                                 if (!error) {      
 
