@@ -3,3 +3,5 @@
 Contract was deployed in Rinkeby:
 Transaction ID: 
 Contract address: 
+
+To run the UI: ```npm run http-server```
