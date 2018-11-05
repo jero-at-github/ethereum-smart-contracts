@@ -45,6 +45,9 @@ contract StarNotary is ERC721 {
         emit PutForSell(_tokenId, _price);         
     }
 
+    /**
+     Buy a star
+     */
     function buyStar(uint256 _tokenId) public payable { 
 
         require(starsForSale[_tokenId] > 0, "The star you try to buy is not for sale");
@@ -88,6 +91,10 @@ contract StarNotary is ERC721 {
         return result;
     }     
 
+    /**
+        EXTENDED ERC721 functions
+     */
+
     function ownerOfStar(uint256 tokenId) public view returns (address) {
 
         return ownerOf(tokenId);
@@ -96,16 +103,31 @@ contract StarNotary is ERC721 {
     function safeStarTransferFrom(address from, address to, uint256 tokenId) public {
                                         
         safeTransferFrom(from, to, tokenId);                
+    }    
+
+    function mintStar(address to, uint256 tokenId) internal {
+
+        _mint(to, tokenId);
     }
 
-    /*
-    mint()
-    approve()    
-    SetApprovalForAll()
-    getApproved()
-    isApprovedForAll()
+    function approveStar(address to, uint256 tokenId) public { // expects sender account
+
+        approve(to, tokenId);       
+    }
+
+    function setStarApprovalForAll(address to, bool approved) public { // expects sender account
+
+        setApprovalForAll(to, approved);
+    }
+
+    function getStarApproved(uint256 tokenId) public view returns (address) {
+
+        return getApproved(tokenId);
+    }
+
+    function isStarApprovedForAll(address owner, address operator) public view returns (bool) {
+
+        return isApprovedForAll(owner, operator);
+    }
     
-    starsForSale()
-    tokenIdToStarInfo()
-    */
 }
