@@ -9,7 +9,7 @@
   "scripts": {
     "test": "truffle.cmd test",
     "http-server": "http-server ../",
-    "deploy-local":     "truffle.cmd compile --reset & truffle.cmd deploy --network development --reset",
+    "deploy-local":     "truffle.cmd compile --reset & truffle.cmd deploy --network ganache --reset",
     "deploy-rinkeby":   "truffle.cmd compile --reset & truffle.cmd deploy --network rinkeby --reset"
   },
   "keywords": [],
