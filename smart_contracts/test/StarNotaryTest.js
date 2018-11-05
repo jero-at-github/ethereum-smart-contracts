@@ -14,7 +14,7 @@ contract('StarNotary', accounts => {
         this.contract = await StarNotary.new({from: accounts[0]})
     })
     
-    describe('can create a star', () => { 
+    describe('can create a star and check existence', () => { 
 
         let starId = 1;
 
@@ -36,7 +36,7 @@ contract('StarNotary', accounts => {
             );                             
         })
 
-        it('can create a star and check that it exists', async function () {   
+        it('Check that it exists', async function () {   
 
             // check if the checkIfStarExist function works as expected
             let isStarAlreadyRegistered = await this.contract.checkIfStarExist(starTestData[2], starTestData[3], starTestData[4]);
@@ -54,7 +54,7 @@ contract('StarNotary', accounts => {
         let starPrice = web3.toWei(.01, "ether")
 
         beforeEach(async function () { 
-            await this.contract.createStar(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: user1});                    
+            await this.contract.createStar(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: user1});             
         })
 
         it('user1 can put up their star for sale', async function () { 
@@ -84,6 +84,26 @@ contract('StarNotary', accounts => {
 
                 assert.equal(balanceBeforeTransaction.sub(balanceAfterTransaction), starPrice)
             })
-        })
+        })        
     })
+
+    describe("safe transfer + ownerOf", () => {
+
+        let user1 = accounts[1];
+        let user2 = accounts[2];
+        let starId = 1;
+
+        beforeEach(async function () { 
+
+            // create the star
+            await this.contract.createStar(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: user1});                   
+        })
+
+        it("user1 can transfer a star to user 2", async function() {
+           
+            await this.contract._safeTransferFrom(user1, user2, starId, {from: user1});    
+            let newOwner = await this.contract._ownerOf(starId);                   
+            assert.equal(newOwner, user2, "The ownership change failed!");
+        });
+    });
 })
