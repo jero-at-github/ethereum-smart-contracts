@@ -106,4 +106,30 @@ contract('StarNotary', accounts => {
             assert.equal(newOwner, user2, "The ownership change failed!");
         });
     });
+
+    describe("different approvoval related tests", () => {
+
+        let user1 = accounts[1];
+        let user2 = accounts[2];
+        let starId = 1;
+
+        beforeEach(async function () { 
+
+            // create the star
+            await this.contract.createStar(starTestData[0], starTestData[1], starTestData[2], starTestData[3], starTestData[4], starId, {from: user1});                   
+        })
+
+        it("user1 can approve user2", async function() {
+           
+            await this.contract.approveStar(user2, starId, {from: user1});    
+            let approvedAccount = await this.contract.getStarApproved(starId, {from: user1});    
+            assert.equal(approvedAccount, user2, "The approval operation failed!");
+
+            // set to false the status for approval
+            await this.contract.setStarApprovalForAll(user2, false, {from: user1});                          
+            let isApproved = await this.contract.isStarApprovedForAll(user1, user2);                  
+            assert.equal(isApproved, false, "The approval status is wrong!");                
+        });
+    });
+
 })
