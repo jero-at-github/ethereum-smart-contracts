@@ -3,8 +3,9 @@ var environment = "rinkeby"; // ganache, rinkeby
 var ganacheUrl = "HTTP://127.0.0.1:7545";
 var infuraUrl = 'https://rinkeby.infura.io/v3/8da2ccf1f93e4660a6a9d1fabbf4ffd0';
 
-var account;
-var rinkebyAccount = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";            
+var account1, account2;
+var rinkebyAccount1 = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";            
+var rinkebyAccount2 = "0x5ecD0CcD50d9Ca527923E8dC4F55ED30b740B8C7";            
 
 var rinkebyContractAddress = "0x58dd71a6efe1520ee0c0ca79e63e73952cd00c23";
 var ganacheContractAddress = "0xca2a40c21ffdc6e84d7a1715ad36ebdaa23664d1";
@@ -52,10 +53,12 @@ window.addEventListener('load', function() {
 
 if (environment == "ganache") {
     // The default (top) wallet account from a list of test accounts 
-    account = web3.eth.accounts[0];
+    account1 = web3.eth.accounts[0];
+    account2 = web3.eth.accounts[1];
 }
 else {
-    account = rinkebyAccount;
+    account1 = rinkebyAccount1;
+    account2 = rinkebyAccount2;
 }                                  
 
 // The interface definition for your smart contract (the ABI) 
@@ -157,7 +160,7 @@ function putStarForSale() {
     starNotary.putStarUpForSale.estimateGas( 
         id, 
         value,
-        {from: account}, function(error, result) {                                            
+        {from: account1}, function(error, result) {                                            
 
             if (result) {
                 estimatedGas = result;                            
@@ -166,7 +169,7 @@ function putStarForSale() {
             starNotary.putStarUpForSale(
                 id, 
                 value,
-                {gas: estimatedGas, from: account}, 
+                {gas: estimatedGas, from: account1}, 
                 function (error, result) {
                     if (!error) {
                         log("Put for sale star id " + id + ". Waiting for confirmation of transaction: " + result)
@@ -225,7 +228,7 @@ function claimButtonClicked() {
         document.querySelector("#star-dec").value, 
         document.querySelector("#star-mag").value, 
         document.querySelector("#star-id").value,
-        {from: account}, function(error, result) {                                            
+        {from: account1}, function(error, result) {                                            
 
             if (result) {
                 estimatedGas = result;                            
@@ -239,7 +242,7 @@ function claimButtonClicked() {
                 document.querySelector("#star-dec").value, 
                 document.querySelector("#star-mag").value, 
                 document.querySelector("#star-id").value, 
-                {gas: estimatedGas, from: account}, 
+                {gas: estimatedGas, from: account1}, 
                 function (error, result) {                                           
                     
                     if (!error) {      
