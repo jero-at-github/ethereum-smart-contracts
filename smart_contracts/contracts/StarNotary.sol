@@ -88,12 +88,12 @@ contract StarNotary is ERC721 {
         return result;
     }     
 
-    function _ownerOf(uint256 tokenId) public view returns (address) {
-        
+    function ownerOfStar(uint256 tokenId) public view returns (address) {
+
         return ownerOf(tokenId);
     }
 
-    function _safeTransferFrom(address from, address to, uint256 tokenId) public {
+    function safeStarTransferFrom(address from, address to, uint256 tokenId) public {
                                         
         safeTransferFrom(from, to, tokenId);                
     }

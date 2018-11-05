@@ -101,8 +101,8 @@ contract('StarNotary', accounts => {
 
         it("user1 can transfer a star to user 2", async function() {
            
-            await this.contract._safeTransferFrom(user1, user2, starId, {from: user1});    
-            let newOwner = await this.contract._ownerOf(starId);                   
+            await this.contract.safeStarTransferFrom(user1, user2, starId, {from: user1});    
+            let newOwner = await this.contract.ownerOfStar(starId);                   
             assert.equal(newOwner, user2, "The ownership change failed!");
         });
     });
