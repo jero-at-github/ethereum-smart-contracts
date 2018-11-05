@@ -7,7 +7,7 @@ var account1, account2;
 var rinkebyAccount1 = "0x4348e2F2ac596e44E6A6D4151aE84e4aA4126A8d";            
 var rinkebyAccount2 = "0x5ecD0CcD50d9Ca527923E8dC4F55ED30b740B8C7";            
 
-var rinkebyContractAddress = "0x58dd71a6efe1520ee0c0ca79e63e73952cd00c23";
+var rinkebyContractAddress = "0x012797e0e793dcaf7185f5d416bcf25f537bd66d";
 var ganacheContractAddress = "0xca2a40c21ffdc6e84d7a1715ad36ebdaa23664d1";
             
 var defaultEstimatedGas = 3000000;
