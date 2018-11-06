@@ -18,7 +18,7 @@ if (environment == "ganache") {
 else if(typeof web3 != 'undefined') { 
 
     // case with Metamask
-    environment = "Metamaks";
+    environment = "MetaMask";
     web3 = new Web3(web3.currentProvider);                
 }                
 else if (environment == "rinkeby") {
@@ -46,7 +46,7 @@ window.addEventListener('load', function() {
     else {
         connectedAccount = rinkebyContractAddress;
     }  
-    document.querySelector("#connectedAccount").innerHTML = "Connected to account: " + connectedAccount;
+    document.querySelector("#connectedAccount").innerHTML = "Connected to contract: " + connectedAccount;
 })
 
 // Account to be used
